@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Fat Karaoke List</string>
+    <string name="box_search_placeholder">What are you looking for?</string>
+    <string name="button_search">Search</string>
 </resources>
