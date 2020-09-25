@@ -1,14 +1,14 @@
-package eu.ammw.fatkaraoke.search.result;
-
-import androidx.appcompat.app.AppCompatActivity;
+package eu.ammw.fatkaraoke.ui.searchresult;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
 
-import eu.ammw.fatkaraoke.MainActivity;
+import androidx.appcompat.app.AppCompatActivity;
+
 import eu.ammw.fatkaraoke.R;
+
+import static eu.ammw.fatkaraoke.Extra.QUERY;
 
 public class SearchResultActivity extends AppCompatActivity {
 
@@ -23,7 +23,7 @@ public class SearchResultActivity extends AppCompatActivity {
         }
 
         Intent intent = getIntent();
-        String message = intent.getStringExtra(MainActivity.QUERY);
+        String message = intent.getStringExtra(QUERY);
         Log.w("QUERY", message);
         // TODO display results in table
     }

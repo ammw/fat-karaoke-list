@@ -1,26 +1,26 @@
-package eu.ammw.fatkaraoke.search.result;
-
-import androidx.recyclerview.widget.RecyclerView;
+package eu.ammw.fatkaraoke.ui.searchresult;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import eu.ammw.fatkaraoke.R;
-import eu.ammw.fatkaraoke.dummy.DummyContent.DummyItem;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import eu.ammw.fatkaraoke.R;
+import eu.ammw.fatkaraoke.model.Song;
+
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem}.
+ * {@link RecyclerView.Adapter} that can display a {@link eu.ammw.fatkaraoke.model.Song}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class SearchResultRecyclerViewAdapter extends RecyclerView.Adapter<SearchResultRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<Song> mValues;
 
-    public SearchResultRecyclerViewAdapter(List<DummyItem> items) {
+    public SearchResultRecyclerViewAdapter(List<Song> items) {
         mValues = items;
     }
 
@@ -34,8 +34,8 @@ public class SearchResultRecyclerViewAdapter extends RecyclerView.Adapter<Search
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mIdView.setText(mValues.get(position).getTitle());
+        holder.mContentView.setText(mValues.get(position).toString());
     }
 
     @Override
@@ -47,7 +47,7 @@ public class SearchResultRecyclerViewAdapter extends RecyclerView.Adapter<Search
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public Song mItem;
 
         public ViewHolder(View view) {
             super(view);

@@ -7,11 +7,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-import eu.ammw.fatkaraoke.search.result.SearchResultActivity;
+import eu.ammw.fatkaraoke.ui.searchresult.SearchResultActivity;
+
+import static eu.ammw.fatkaraoke.Extra.QUERY;
 
 public class MainActivity extends AppCompatActivity {
-
-    public static final String QUERY = "eu.ammw.fatkaraoke.QUERY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void runSearch(View view) {
         Intent intent = new Intent(this, SearchResultActivity.class);
-        EditText editText = (EditText) findViewById(R.id.searchBox);
+        EditText editText = findViewById(R.id.searchBox);
         String message = editText.getText().toString();
         intent.putExtra(QUERY, message);
         startActivity(intent);

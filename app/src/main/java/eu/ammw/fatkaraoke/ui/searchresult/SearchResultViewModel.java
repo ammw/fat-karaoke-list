@@ -1,4 +1,4 @@
-package eu.ammw.fatkaraoke.search.result;
+package eu.ammw.fatkaraoke.ui.searchresult;
 
 import androidx.lifecycle.ViewModel;
 
