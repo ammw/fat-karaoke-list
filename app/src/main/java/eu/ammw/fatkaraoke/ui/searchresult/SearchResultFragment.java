@@ -6,40 +6,39 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerFragment;
 import eu.ammw.fatkaraoke.R;
-import eu.ammw.fatkaraoke.dummy.DummyContent;
 
 /**
  * A fragment representing a list of Items.
  */
-public class SearchResultFragment extends Fragment {
+public class SearchResultFragment extends DaggerFragment {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
     private static final int COLUMN_COUNT = 1;
 
-    private SearchResultViewModel viewModel;
+    @Inject
+    SearchResultViewModel viewModel;
+
+    @Inject
+    SearchResultRecyclerViewAdapter viewAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
+    @Inject
     public SearchResultFragment() {
     }
 
     public static SearchResultFragment newInstance() {
         SearchResultFragment fragment = new SearchResultFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, COLUMN_COUNT);
-        fragment.setArguments(args);
+        fragment.setArguments(new Bundle());
         return fragment;
     }
 
@@ -62,15 +61,12 @@ public class SearchResultFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, COLUMN_COUNT));
             }
-            recyclerView.setAdapter(new SearchResultRecyclerViewAdapter(DummyContent.ITEMS));
+            recyclerView.setAdapter(viewAdapter);
         }
         return view;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        viewModel = ViewModelProviders.of(this).get(SearchResultViewModel.class);
-        // TODO: Use the ViewModel
+    public void notifyDataChanged() {
+        viewAdapter.notifyDataSetChanged();
     }
 }

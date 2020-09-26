@@ -7,21 +7,21 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
+import javax.inject.Inject;
 
 import eu.ammw.fatkaraoke.R;
 import eu.ammw.fatkaraoke.model.Song;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link eu.ammw.fatkaraoke.model.Song}.
- * TODO: Replace the implementation with code for your data type.
  */
 public class SearchResultRecyclerViewAdapter extends RecyclerView.Adapter<SearchResultRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Song> mValues;
+    private final SearchResultViewModel viewModel;
 
-    public SearchResultRecyclerViewAdapter(List<Song> items) {
-        mValues = items;
+    @Inject
+    public SearchResultRecyclerViewAdapter(SearchResultViewModel viewModel) {
+        this.viewModel = viewModel;
     }
 
     @Override
@@ -33,32 +33,32 @@ public class SearchResultRecyclerViewAdapter extends RecyclerView.Adapter<Search
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getTitle());
-        holder.mContentView.setText(mValues.get(position).toString());
+        holder.song = viewModel.getSongs().get(position);
+        holder.titleView.setText(holder.song.getTitle());
+        holder.artistView.setText(holder.song.getArtist());
     }
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return viewModel.getSongs().size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public Song mItem;
+        public final View view;
+        public final TextView titleView;
+        public final TextView artistView;
+        public Song song;
 
         public ViewHolder(View view) {
             super(view);
-            mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            this.view = view;
+            titleView = view.findViewById(R.id.item_number);
+            artistView = view.findViewById(R.id.content);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + titleView.getText() + "|" + artistView.getText() + "'";
         }
     }
 }

@@ -1,30 +1,63 @@
 package eu.ammw.fatkaraoke.ui.searchresult;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjection;
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.HasAndroidInjector;
 import eu.ammw.fatkaraoke.R;
+import eu.ammw.fatkaraoke.common.Callback;
+import eu.ammw.fatkaraoke.data.SongRepository;
+import eu.ammw.fatkaraoke.model.Song;
 
-import static eu.ammw.fatkaraoke.Extra.QUERY;
+import static eu.ammw.fatkaraoke.common.Extra.QUERY;
 
-public class SearchResultActivity extends AppCompatActivity {
+public class SearchResultActivity extends AppCompatActivity implements HasAndroidInjector {
+    @Inject
+    DispatchingAndroidInjector<Object> androidInjector;
+    @Inject
+    SearchResultViewModel viewModel;
+    @Inject
+    SongRepository songRepository;
+    @Inject
+    SearchResultFragment searchResultFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
+        String query = getIntent().getStringExtra(QUERY);
+        songRepository.searchSongs(query, new Callback<ArrayList<Song>>() {
+            @Override
+            public void onComplete(final ArrayList<Song> result) {
+                viewModel.updateResult(result);
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        searchResultFragment.notifyDataChanged();
+                    }
+                });
+            }
+        });
+
         setContentView(R.layout.search_result_activity);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, SearchResultFragment.newInstance())
+                    .replace(R.id.container, searchResultFragment)
                     .commitNow();
         }
+    }
 
-        Intent intent = getIntent();
-        String message = intent.getStringExtra(QUERY);
-        Log.w("QUERY", message);
-        // TODO display results in table
+    @Override
+    public AndroidInjector<Object> androidInjector() {
+        return androidInjector;
     }
 }

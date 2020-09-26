@@ -23,6 +23,11 @@ android {
 }
 
 dependencies {
+    api 'com.google.dagger:dagger:2.29'
+    api 'com.google.dagger:dagger-android:2.29'
+    implementation 'com.google.dagger:dagger-android-support:2.29'
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.29'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.29'
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'

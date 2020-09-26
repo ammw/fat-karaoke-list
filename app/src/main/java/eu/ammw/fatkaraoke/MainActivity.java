@@ -7,14 +7,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
+import dagger.android.AndroidInjection;
 import eu.ammw.fatkaraoke.ui.searchresult.SearchResultActivity;
 
-import static eu.ammw.fatkaraoke.Extra.QUERY;
+import static eu.ammw.fatkaraoke.common.Extra.QUERY;
 
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }

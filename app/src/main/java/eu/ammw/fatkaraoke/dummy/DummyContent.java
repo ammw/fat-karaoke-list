@@ -19,7 +19,7 @@ public class DummyContent {
     /**
      * An array of sample (dummy) items.
      */
-    public static final List<Song> ITEMS = new ArrayList<>();
+    public static final ArrayList<Song> ITEMS = new ArrayList<>();
 
     /**
      * A map of sample (dummy) items, by ID.
