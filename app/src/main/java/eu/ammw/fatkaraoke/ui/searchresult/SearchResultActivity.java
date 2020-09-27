@@ -4,8 +4,6 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
-
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
@@ -13,9 +11,7 @@ import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasAndroidInjector;
 import eu.ammw.fatkaraoke.R;
-import eu.ammw.fatkaraoke.common.Callback;
 import eu.ammw.fatkaraoke.data.SongRepository;
-import eu.ammw.fatkaraoke.model.Song;
 
 import static eu.ammw.fatkaraoke.common.Extra.QUERY;
 
@@ -34,18 +30,9 @@ public class SearchResultActivity extends AppCompatActivity implements HasAndroi
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         String query = getIntent().getStringExtra(QUERY);
-        songRepository.searchSongs(query, new Callback<ArrayList<Song>>() {
-            @Override
-            public void onComplete(final ArrayList<Song> result) {
-                viewModel.updateResult(result);
-                runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        searchResultFragment.notifyDataChanged();
-                    }
-                });
-            }
+        songRepository.searchSongs(query, result -> {
+            viewModel.updateResult(result);
+            runOnUiThread(searchResultFragment::notifyDataChanged);
         });
 
         setContentView(R.layout.search_result_activity);
