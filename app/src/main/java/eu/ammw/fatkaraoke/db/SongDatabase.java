@@ -8,5 +8,5 @@ import eu.ammw.fatkaraoke.model.Song;
 
 @Database(entities = {Song.class}, version = 1)
 public abstract class SongDatabase extends RoomDatabase {
-    public abstract SongDao userDao();
+    public abstract SongDao songDao();
 }

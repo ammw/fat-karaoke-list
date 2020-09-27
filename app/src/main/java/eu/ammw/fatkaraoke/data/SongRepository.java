@@ -2,7 +2,7 @@ package eu.ammw.fatkaraoke.data;
 
 import android.util.Log;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import javax.inject.Inject;
@@ -22,15 +22,25 @@ public class SongRepository {
         this.database = database;
     }
 
-    public void searchSongs(final String query, final Callback<ArrayList<Song>> callback) {
+    public void searchSongs(final String query, final Callback<List<Song>> callback) {
         executorService.execute(() -> {
-            ArrayList<Song> result = getSongs(query);
+            List<Song> result;
+            if (query == null || query.isEmpty()) {
+                result = getAllSongs();
+            } else {
+                result = getSongs(query);
+            }
             callback.onComplete(result);
         });
     }
 
-    private ArrayList<Song> getSongs(String query) {
+    private List<Song> getAllSongs() {
+        Log.i(TAG, "Getting all songs from database");
+        return database.songDao().getAll();
+    }
+
+    private List<Song> getSongs(String query) {
         Log.i(TAG, "Searching for " + query);
-        return new ArrayList<>(database.userDao().find("%" + query + "%"));
+        return database.songDao().find("%" + query + "%");
     }
 }
