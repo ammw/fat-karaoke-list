@@ -9,6 +9,7 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasAndroidInjector;
 import eu.ammw.fatkaraoke.dagger.ApplicationComponent;
 import eu.ammw.fatkaraoke.dagger.DaggerApplicationComponent;
+import eu.ammw.fatkaraoke.dagger.MainModule;
 
 public class FatKaraokeApplication extends Application implements HasAndroidInjector {
     @Inject
@@ -19,6 +20,7 @@ public class FatKaraokeApplication extends Application implements HasAndroidInje
     @Override
     public void onCreate() {
         super.onCreate();
+        MainModule.setContext(getApplicationContext());
         applicationComponent = DaggerApplicationComponent.builder().application(this).build();
         applicationComponent.inject(this);
     }

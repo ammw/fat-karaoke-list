@@ -1,22 +1,29 @@
 package eu.ammw.fatkaraoke.model;
 
-import java.util.Objects;
-import java.util.UUID;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+import java.util.Objects;
+
+@Entity
 public class Song {
     private static final String FORMAT = "\"%s\" by %s";
 
-    private final UUID id;
+    @PrimaryKey
+    private final long id;
+    @ColumnInfo
     private final String title;
+    @ColumnInfo
     private final String artist;
 
-    public Song(UUID id, String title, String artist) {
-        this.id = id == null ? UUID.randomUUID() : id;
+    public Song(long id, String title, String artist) {
+        this.id = id;
         this.title = title;
         this.artist = artist;
     }
 
-    public UUID getId() {
+    public long getId() {
         return id;
     }
 
