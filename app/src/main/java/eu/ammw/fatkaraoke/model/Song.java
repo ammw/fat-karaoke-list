@@ -2,6 +2,7 @@ package eu.ammw.fatkaraoke.model;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Objects;
@@ -10,21 +11,31 @@ import java.util.Objects;
 public class Song {
     private static final String FORMAT = "\"%s\" by %s";
 
-    @PrimaryKey
-    private final long id;
+    @PrimaryKey(autoGenerate = true)
+    private Long id;
     @ColumnInfo
     private final String title;
     @ColumnInfo
     private final String artist;
 
-    public Song(long id, String title, String artist) {
+    public Song(Long id, String title, String artist) {
+        this(title, artist);
         this.id = id;
+    }
+
+    @Ignore
+    public Song(String title, String artist) {
         this.title = title;
         this.artist = artist;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
+    }
+
+    @Deprecated
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {

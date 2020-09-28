@@ -23,9 +23,9 @@ import static org.mockito.MockitoAnnotations.openMocks;
 public class SongRepositoryTest {
 
     private static final List<Song> SONG_LIST = Arrays.asList(
-            new Song(1, "What's Up", "4 Non Blondes"),
-            new Song(2, "Let It Go", "Idina Menzel"),
-            new Song(3, "Wonderwall", "Oasis")
+            new Song(1L, "What's Up", "4 Non Blondes"),
+            new Song(2L, "Let It Go", "Idina Menzel"),
+            new Song(3L, "Wonderwall", "Oasis")
     );
 
     private static final ExecutorService executorService = Executors.newFixedThreadPool(1);
