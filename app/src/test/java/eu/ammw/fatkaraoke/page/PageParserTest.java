@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.tuple;
 
 class PageParserTest {
     private static final String TEST_PAGE = TestDataSource.getTestAllArtistsPage();
+    private static final String TEST_PAGE_WITH_BAD_RECORDS = TestDataSource.getTestPageWithBadRecords();
 
     private final PageParser parser = new PageParser();
 
@@ -56,5 +57,14 @@ class PageParserTest {
                         tuple("X", "White Girl"),
                         tuple("Yugoton", "Malcziki"),
                         tuple("Zdzisława Sośnicka", "Aleja Gwiazd"));
+    }
+
+    @Test
+    void shouldHandleInvalidRecords() {
+        List<Song> songs = parser.parse(TEST_PAGE_WITH_BAD_RECORDS);
+        assertThat(songs)
+                .hasSize(1)
+                .extracting(Song::getArtist, Song::getTitle)
+                .containsExactly(tuple("Artist 1 - Artist 2", "Title"));
     }
 }

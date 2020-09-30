@@ -33,9 +33,9 @@ public abstract class MainModule {
     }
 
     @Provides
-    static SongDatabase songDatabase(Context context) {
+    public static SongDatabase songDatabase(Context context) {
         if (DB == null) {
-            DB = Room.databaseBuilder(context, SongDatabase.class, "database-name").build();
+            DB = Room.databaseBuilder(context, SongDatabase.class, "fat-song-database").build();
         }
         return DB;
     }

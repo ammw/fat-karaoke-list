@@ -72,4 +72,8 @@ public final class TestDataSource {
     public static String getTestAllArtistsPage() {
         return ALL_ARTISTS_PAGE;
     }
+
+    public static String getTestPageWithBadRecords() {
+        return HEADER + String.join(SEPARATOR, "Artist 1 - Artist 2 - Title", "Some Random Text") + FOOTER;
+    }
 }

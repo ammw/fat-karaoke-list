@@ -12,7 +12,7 @@ import eu.ammw.fatkaraoke.db.SongDatabase;
 import eu.ammw.fatkaraoke.model.Song;
 
 public class SongRepository {
-    private static final String TAG = "SNGRPO";
+    private static final String TAG = "FKA SONGREPO";
     private final ExecutorService executorService;
     private final SongDatabase database;
 
