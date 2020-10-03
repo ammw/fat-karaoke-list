@@ -7,8 +7,7 @@ import org.mockito.Mock;
 import java.io.IOException;
 import java.util.Arrays;
 
-import eu.ammw.fatkaraoke.db.SongDatabase;
-import eu.ammw.fatkaraoke.db.dao.SongDao;
+import eu.ammw.fatkaraoke.data.SongRepository;
 import eu.ammw.fatkaraoke.model.Song;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -25,9 +24,7 @@ class PageUpdateServiceTest {
     @Mock
     private PageDownloadService downloadService;
     @Mock
-    private SongDatabase database;
-    @Mock
-    private SongDao songDao;
+    private SongRepository repository;
     @Mock
     private PageParser parser;
 
@@ -36,8 +33,7 @@ class PageUpdateServiceTest {
     @BeforeEach
     void setUp() throws IOException {
         openMocks(this);
-        service = new PageUpdateService(downloadService, parser, database);
-        when(database.songDao()).thenReturn(songDao);
+        service = new PageUpdateService(downloadService, parser, repository);
         when(downloadService.download(anyString())).thenReturn("test");
         when(parser.parse("test")).thenReturn(Arrays.asList(TEST_SONG_1, TEST_SONG_2));
     }
@@ -48,7 +44,7 @@ class PageUpdateServiceTest {
         service.performUpdate();
 
         // THEN
-        verify(songDao).insertAll(TEST_SONG_1, TEST_SONG_2);
+        verify(repository).updateSongs(TEST_SONG_1, TEST_SONG_2);
     }
 
     @Test

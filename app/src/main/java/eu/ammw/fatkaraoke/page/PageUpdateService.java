@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import eu.ammw.fatkaraoke.db.SongDatabase;
+import eu.ammw.fatkaraoke.data.SongRepository;
 import eu.ammw.fatkaraoke.model.Song;
 
 public class PageUpdateService {
@@ -16,15 +16,15 @@ public class PageUpdateService {
 
     private final PageDownloadService downloadService;
     private final PageParser parser;
-    private final SongDatabase database;
+    private final SongRepository repository;
 
     private String url = DEFAULT_URL;
 
     @Inject
-    PageUpdateService(PageDownloadService downloadService, PageParser parser, SongDatabase database) {
+    PageUpdateService(PageDownloadService downloadService, PageParser parser, SongRepository repository) {
         this.downloadService = downloadService;
         this.parser = parser;
-        this.database = database;
+        this.repository = repository;
     }
 
     void setUrl(String url) {
@@ -37,7 +37,7 @@ public class PageUpdateService {
         Log.d(TAG, "Bytes received: " + page.length());
         List<Song> songs = parser.parse(page);
         Log.d(TAG, "Found songs: " + songs.size());
-        database.songDao().insertAll(songs.toArray(new Song[0]));
+        repository.updateSongs(songs.toArray(new Song[0]));
         Log.d(TAG, "Saved to database");
         Log.i(TAG, "Update successful!");
     }

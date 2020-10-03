@@ -9,9 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import eu.ammw.fatkaraoke.dagger.MainModule;
+import eu.ammw.fatkaraoke.data.SongRepository;
 import eu.ammw.fatkaraoke.db.SongDatabase;
 
 public class UpdateWorker extends Worker {
@@ -28,9 +30,10 @@ public class UpdateWorker extends Worker {
         super(context, params);
 
         SongDatabase database = MainModule.songDatabase(getApplicationContext());
+        ExecutorService executorService = MainModule.executorService();
         PageParser parser = new PageParser();
         PageDownloadService downloadService = new PageDownloadService();
-        pageUpdateService = new PageUpdateService(downloadService, parser, database);
+        pageUpdateService = new PageUpdateService(downloadService, parser, new SongRepository(executorService, database));
     }
 
     @Override

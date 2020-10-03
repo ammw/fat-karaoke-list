@@ -43,4 +43,9 @@ public class SongRepository {
         Log.i(TAG, "Searching for " + query);
         return database.songDao().find("%" + query + "%");
     }
+
+    public void updateSongs(Song... songs) {
+        database.songDao().deleteAll();
+        database.songDao().insertAll(songs);
+    }
 }

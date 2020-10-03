@@ -12,7 +12,6 @@ import dagger.Provides;
 import dagger.android.ContributesAndroidInjector;
 import eu.ammw.fatkaraoke.MainActivity;
 import eu.ammw.fatkaraoke.db.SongDatabase;
-import eu.ammw.fatkaraoke.ui.searchresult.SearchResultActivity;
 import eu.ammw.fatkaraoke.ui.searchresult.SearchResultViewModel;
 
 @Module
@@ -23,7 +22,7 @@ public abstract class MainModule {
     private static Context CONTEXT;
 
     @Provides
-    static ExecutorService executorService() {
+    public static ExecutorService executorService() {
         return EXECUTOR_SERVICE;
     }
 
@@ -48,9 +47,6 @@ public abstract class MainModule {
     public static void setContext(Context context) {
         CONTEXT = context;
     }
-
-    @ContributesAndroidInjector
-    abstract SearchResultActivity searchResultActivity();
 
     @ContributesAndroidInjector
     abstract MainActivity mainActivity();

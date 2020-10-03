@@ -22,4 +22,7 @@ public interface SongDao {
 
     @Delete
     void delete(Song song);
+
+    @Query("DELETE FROM song")
+    void deleteAll();
 }

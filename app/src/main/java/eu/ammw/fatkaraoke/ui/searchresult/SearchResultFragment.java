@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,8 +19,6 @@ import eu.ammw.fatkaraoke.R;
  */
 public class SearchResultFragment extends DaggerFragment {
 
-    private static final int COLUMN_COUNT = 1;
-
     @Inject
     SearchResultViewModel viewModel;
 
@@ -34,12 +31,6 @@ public class SearchResultFragment extends DaggerFragment {
      */
     @Inject
     public SearchResultFragment() {
-    }
-
-    public static SearchResultFragment newInstance() {
-        SearchResultFragment fragment = new SearchResultFragment();
-        fragment.setArguments(new Bundle());
-        return fragment;
     }
 
     @Override
@@ -56,11 +47,7 @@ public class SearchResultFragment extends DaggerFragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-            if (COLUMN_COUNT <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, COLUMN_COUNT));
-            }
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
             recyclerView.setAdapter(viewAdapter);
         }
         return view;
