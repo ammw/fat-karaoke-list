@@ -30,6 +30,7 @@ public class SongRepository {
             } else {
                 result = getSongs(query);
             }
+            Log.i(TAG, "Found songs: " + result.size());
             callback.onComplete(result);
         });
     }

@@ -17,6 +17,7 @@ import eu.ammw.fatkaraoke.model.Song;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
@@ -89,5 +90,18 @@ public class SongRepositoryTest {
 
         // WHEN
         songRepository.searchSongs("", callback);
+    }
+
+    @Test
+    public void shouldUpdateSongs() {
+        // GIVEN
+        Song[] songs = SONG_LIST.toArray(new Song[0]);
+
+        // WHEN
+        songRepository.updateSongs(songs);
+
+        // THEN
+        verify(songDao).deleteAll();
+        verify(songDao).insertAll(songs);
     }
 }

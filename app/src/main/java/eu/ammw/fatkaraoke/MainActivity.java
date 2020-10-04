@@ -6,6 +6,8 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.concurrent.ExecutorService;
+
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
@@ -13,6 +15,7 @@ import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasAndroidInjector;
 import eu.ammw.fatkaraoke.data.SongRepository;
+import eu.ammw.fatkaraoke.ui.searchresult.EmptyResultFragment;
 import eu.ammw.fatkaraoke.ui.searchresult.SearchResultFragment;
 import eu.ammw.fatkaraoke.ui.searchresult.SearchResultViewModel;
 
@@ -25,6 +28,10 @@ public class MainActivity extends AppCompatActivity implements HasAndroidInjecto
     SongRepository songRepository;
     @Inject
     SearchResultFragment searchResultFragment;
+    @Inject
+    EmptyResultFragment emptyResultFragment;
+    @Inject
+    ExecutorService executorService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +50,18 @@ public class MainActivity extends AppCompatActivity implements HasAndroidInjecto
      */
     public void runSearch(View view) {
         EditText editText = findViewById(R.id.searchBox);
-        String query = editText.getText().toString();
-        songRepository.searchSongs(query, result -> {
-            viewModel.clearList();
-            runOnUiThread(searchResultFragment::notifyDataChanged);
-            viewModel.updateResult(result);
-            runOnUiThread(searchResultFragment::notifyDataChanged);
-        });
+        final String query = editText.getText().toString();
+        executorService.execute(() ->
+                songRepository.searchSongs(query, result -> {
+                    viewModel.updateResult(result);
+                    if (!result.isEmpty()) {
+                        runOnUiThread(searchResultFragment::notifyDataChanged);
+                    }
+                    runOnUiThread(() ->
+                            getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.result_container, result.isEmpty() ? emptyResultFragment : searchResultFragment)
+                                    .commitNow());
+                }));
     }
 
     @Override
