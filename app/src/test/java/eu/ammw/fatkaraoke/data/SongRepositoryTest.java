@@ -101,7 +101,6 @@ public class SongRepositoryTest {
         songRepository.updateSongs(songs);
 
         // THEN
-        verify(songDao).deleteAll();
-        verify(songDao).insertAll(songs);
+        verify(songDatabase).runInTransaction(any(Runnable.class));
     }
 }

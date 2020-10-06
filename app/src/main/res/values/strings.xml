@@ -3,4 +3,5 @@
     <string name="box_search_placeholder">What are you looking for?</string>
     <string name="button_search">Search</string>
     <string name="no_results">Sorry, no results!</string>
+    <string name="button_update">Update song list</string>
 </resources>

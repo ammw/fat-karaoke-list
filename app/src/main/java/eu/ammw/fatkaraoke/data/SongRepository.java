@@ -46,7 +46,9 @@ public class SongRepository {
     }
 
     public void updateSongs(Song... songs) {
-        database.songDao().deleteAll();
-        database.songDao().insertAll(songs);
+        database.runInTransaction(() -> {
+            database.songDao().deleteAll();
+            database.songDao().insertAll(songs);
+        });
     }
 }
