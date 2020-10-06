@@ -1,11 +1,15 @@
 package eu.ammw.fatkaraoke;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 
 import javax.inject.Inject;
@@ -20,6 +24,11 @@ import eu.ammw.fatkaraoke.ui.searchresult.SearchResultFragment;
 import eu.ammw.fatkaraoke.ui.searchresult.SearchResultViewModel;
 
 public class MainActivity extends AppCompatActivity implements HasAndroidInjector {
+    private static final int PERMISSION_ALL = 1;
+    private static final String[] PERMISSIONS = new String[]{
+            Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE
+    };
+
     @Inject
     DispatchingAndroidInjector<Object> androidInjector;
     @Inject
@@ -43,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements HasAndroidInjecto
                     .replace(R.id.result_container, searchResultFragment)
                     .commitNow();
         }
+        ensurePermissions();
     }
 
     /**
@@ -62,6 +72,19 @@ public class MainActivity extends AppCompatActivity implements HasAndroidInjecto
                                     .replace(R.id.result_container, result.isEmpty() ? emptyResultFragment : searchResultFragment)
                                     .commitNow());
                 }));
+    }
+
+    private void ensurePermissions() {
+        if (!hasPermissions(PERMISSIONS)) {
+            requestPermissions(PERMISSIONS, PERMISSION_ALL);
+        }
+        if (!hasPermissions(PERMISSIONS)) {
+            Log.e("FKA", "PANIC!!!");
+        }
+    }
+
+    private boolean hasPermissions(String... permissions) {
+        return Arrays.stream(permissions).allMatch(permission -> checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED);
     }
 
     @Override

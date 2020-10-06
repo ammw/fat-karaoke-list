@@ -41,27 +41,22 @@ public class SearchResultFragment extends DaggerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view;
-        if (viewModel.getSongs().isEmpty()) {
-            view = inflater.inflate(R.layout.search_result_empty, container, false);
-        } else {
-            view = inflater.inflate(R.layout.search_result_list, container, false);
+        View view = inflater.inflate(R.layout.search_result_list, container, false);
 
-            // Set the adapter
-            if (view instanceof RecyclerView) {
-                Context context = view.getContext();
-                RecyclerView recyclerView = (RecyclerView) view;
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                recyclerView.setAdapter(viewAdapter);
-            }
+        // Set the adapter
+        if (view instanceof RecyclerView) {
+            Context context = view.getContext();
+            RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            recyclerView.setAdapter(viewAdapter);
         }
         return view;
-    }
+}
 
     public void notifyDataChanged() {
         viewAdapter.notifyDataSetChanged();
         View view = getView();
-        if (view != null && ! (view instanceof RecyclerView)) {
+        if (view != null && !(view instanceof RecyclerView)) {
             view.invalidate();
         }
     }
