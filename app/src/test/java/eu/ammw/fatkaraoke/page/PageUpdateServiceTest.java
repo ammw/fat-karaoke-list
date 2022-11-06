@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import java.io.IOException;
 import java.util.Arrays;
 
+import eu.ammw.fatkaraoke.config.Configuration;
 import eu.ammw.fatkaraoke.data.SongRepository;
 import eu.ammw.fatkaraoke.model.Song;
 
@@ -27,15 +28,18 @@ class PageUpdateServiceTest {
     private SongRepository repository;
     @Mock
     private PageParser parser;
+    @Mock
+    private Configuration configuration;
 
     private PageUpdateService service;
 
     @BeforeEach
     void setUp() throws IOException {
         openMocks(this);
-        service = new PageUpdateService(downloadService, parser, repository);
         when(downloadService.download(anyString())).thenReturn("test");
         when(parser.parse("test")).thenReturn(Arrays.asList(TEST_SONG_1, TEST_SONG_2));
+        when(configuration.getProperty(anyString())).thenReturn("test.url.com");
+        service = new PageUpdateService(downloadService, parser, repository, configuration);
     }
 
     @Test
@@ -48,15 +52,24 @@ class PageUpdateServiceTest {
     }
 
     @Test
-    void shouldUseProvidedUrl() throws IOException {
-        // GIVEN
-        service.setUrl("test.url.com");
-
+    void shouldUseUrlFromConfiguration() throws IOException {
         // WHEN
         service.performUpdate();
 
         // THEN
         verify(downloadService).download("test.url.com");
+    }
+
+    @Test
+    void shouldUseProvidedUrl() throws IOException {
+        // GIVEN
+        service.setUrl("new.url.com");
+
+        // WHEN
+        service.performUpdate();
+
+        // THEN
+        verify(downloadService).download("new.url.com");
     }
 
     @Test

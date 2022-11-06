@@ -7,24 +7,26 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import eu.ammw.fatkaraoke.config.Configuration;
 import eu.ammw.fatkaraoke.data.SongRepository;
 import eu.ammw.fatkaraoke.model.Song;
 
 public class PageUpdateService {
-    private static final String DEFAULT_URL = "http://faak.org/lista.html";
     private static final String TAG = "FKA UPDSVC";
+    private static final String URL_KEY = "faak.url.list.all";
 
     private final PageDownloadService downloadService;
     private final PageParser parser;
     private final SongRepository repository;
 
-    private String url = DEFAULT_URL;
+    private String url;
 
     @Inject
-    PageUpdateService(PageDownloadService downloadService, PageParser parser, SongRepository repository) {
+    PageUpdateService(PageDownloadService downloadService, PageParser parser, SongRepository repository, Configuration configuration) {
         this.downloadService = downloadService;
         this.parser = parser;
         this.repository = repository;
+        this.url = configuration.getProperty(URL_KEY);
     }
 
     void setUrl(String url) {

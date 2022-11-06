@@ -12,6 +12,7 @@ import androidx.work.WorkerParameters;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import eu.ammw.fatkaraoke.config.Configuration;
 import eu.ammw.fatkaraoke.dagger.MainModule;
 import eu.ammw.fatkaraoke.data.SongRepository;
 import eu.ammw.fatkaraoke.db.SongDatabase;
@@ -33,7 +34,9 @@ public class UpdateWorker extends Worker {
         ExecutorService executorService = MainModule.executorService();
         PageParser parser = new PageParser();
         PageDownloadService downloadService = new PageDownloadService();
-        pageUpdateService = new PageUpdateService(downloadService, parser, new SongRepository(executorService, database));
+        SongRepository songRepository = new SongRepository(executorService, database);
+        Configuration configuration = new Configuration(context);
+        pageUpdateService = new PageUpdateService(downloadService, parser, songRepository, configuration);
     }
 
     @Override
