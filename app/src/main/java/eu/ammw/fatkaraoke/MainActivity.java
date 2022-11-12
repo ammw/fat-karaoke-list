@@ -3,10 +3,11 @@ package eu.ammw.fatkaraoke;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements HasAndroidInjecto
                     .commitNow();
         }
         ensurePermissions();
+        setSearchFieldListeners();
     }
 
     @Override
@@ -83,25 +85,6 @@ public class MainActivity extends AppCompatActivity implements HasAndroidInjecto
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Called when the user taps the Search button
-     */
-    public void runSearch(View view) {
-        EditText editText = findViewById(R.id.searchBox);
-        final String query = editText.getText().toString();
-        executorService.execute(() ->
-                songRepository.searchSongs(query, result -> {
-                    viewModel.updateResult(result);
-                    if (!result.isEmpty()) {
-                        runOnUiThread(searchResultFragment::notifyDataChanged);
-                    }
-                    runOnUiThread(() ->
-                            getSupportFragmentManager().beginTransaction()
-                                    .replace(R.id.result_container, result.isEmpty() ? emptyResultFragment : searchResultFragment)
-                                    .commitNow());
-                }));
-    }
-
     private void ensurePermissions() {
         if (!hasPermissions(PERMISSIONS)) {
             requestPermissions(PERMISSIONS, PERMISSION_ALL);
@@ -109,6 +92,11 @@ public class MainActivity extends AppCompatActivity implements HasAndroidInjecto
         if (!hasPermissions(PERMISSIONS)) {
             Log.e(TAG, "No permissions despite requesting!");
         }
+    }
+
+    private void setSearchFieldListeners() {
+        EditText searchBox = findViewById(R.id.searchBox);
+        searchBox.addTextChangedListener(new SearchTextWatcher());
     }
 
     private void scheduleUpdate() {
@@ -124,5 +112,29 @@ public class MainActivity extends AppCompatActivity implements HasAndroidInjecto
     @Override
     public AndroidInjector<Object> androidInjector() {
         return androidInjector;
+    }
+
+    private class SearchTextWatcher implements TextWatcher {
+
+        @Override
+        public void afterTextChanged(Editable search) {}
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+        @Override
+        public void onTextChanged(CharSequence query, int start, int before, int count) {
+            executorService.execute(() ->
+                    songRepository.searchSongs(query.toString(), result -> {
+                        viewModel.updateResult(result);
+                        if (!result.isEmpty()) {
+                            runOnUiThread(searchResultFragment::notifyDataChanged);
+                        }
+                        runOnUiThread(() ->
+                                getSupportFragmentManager().beginTransaction()
+                                        .replace(R.id.result_container, result.isEmpty() ? emptyResultFragment : searchResultFragment)
+                                        .commitNow());
+                    }));
+        }
     }
 }
