@@ -50,7 +50,7 @@ public class SongRepositoryTest {
     @Test
     public void shouldSearchSongs() {
         // GIVEN
-        when(songDao.find("%test%")).thenReturn(SONG_LIST);
+        when(songDao.find("%testTitle%", "%testArtist%")).thenReturn(SONG_LIST);
         doAnswer(invocation -> {
             // THEN
             List<Song> songs = invocation.getArgument(0);
@@ -59,7 +59,112 @@ public class SongRepositoryTest {
         }).when(callback).onComplete(any());
 
         // WHEN
-        songRepository.searchSongs("test", callback);
+        songRepository.searchSongs("testTitle", "testArtist", callback);
+    }
+
+    @Test
+    public void shouldSearchSongsTrimInputs() {
+        // GIVEN
+        when(songDao.find("%testTitle%", "%testArtist%")).thenReturn(SONG_LIST);
+        doAnswer(invocation -> {
+            // THEN
+            List<Song> songs = invocation.getArgument(0);
+            assertThat(songs).isEqualTo(SONG_LIST);
+            return null;
+        }).when(callback).onComplete(any());
+
+        // WHEN
+        songRepository.searchSongs(" testTitle\t", "\ntestArtist  ", callback);
+    }
+
+    @Test
+    public void shouldSearchSongsWhenTitleNull() {
+        // GIVEN
+        when(songDao.find("%", "%testArtist%")).thenReturn(SONG_LIST);
+        doAnswer(invocation -> {
+            // THEN
+            List<Song> songs = invocation.getArgument(0);
+            assertThat(songs).isEqualTo(SONG_LIST);
+            return null;
+        }).when(callback).onComplete(any());
+
+        // WHEN
+        songRepository.searchSongs(null, "testArtist", callback);
+    }
+
+    @Test
+    public void shouldSearchSongsWhenTitleEmpty() {
+        // GIVEN
+        when(songDao.find("%", "%testArtist%")).thenReturn(SONG_LIST);
+        doAnswer(invocation -> {
+            // THEN
+            List<Song> songs = invocation.getArgument(0);
+            assertThat(songs).isEqualTo(SONG_LIST);
+            return null;
+        }).when(callback).onComplete(any());
+
+        // WHEN
+        songRepository.searchSongs("", "testArtist", callback);
+    }
+
+    @Test
+    public void shouldSearchSongsWhenTitleWhitespaceOnly() {
+        // GIVEN
+        when(songDao.find("%", "%testArtist%")).thenReturn(SONG_LIST);
+        doAnswer(invocation -> {
+            // THEN
+            List<Song> songs = invocation.getArgument(0);
+            assertThat(songs).isEqualTo(SONG_LIST);
+            return null;
+        }).when(callback).onComplete(any());
+
+        // WHEN
+        songRepository.searchSongs("\t \n", "testArtist", callback);
+    }
+
+    @Test
+    public void shouldSearchSongsWhenArtistNull() {
+        // GIVEN
+        when(songDao.find("%testTitle%", "%")).thenReturn(SONG_LIST);
+        doAnswer(invocation -> {
+            // THEN
+            List<Song> songs = invocation.getArgument(0);
+            assertThat(songs).isEqualTo(SONG_LIST);
+            return null;
+        }).when(callback).onComplete(any());
+
+        // WHEN
+        songRepository.searchSongs("testTitle", null, callback);
+    }
+
+    @Test
+    public void shouldSearchSongsWhenArtistEmpty() {
+        // GIVEN
+        when(songDao.find("%testTitle%", "%")).thenReturn(SONG_LIST);
+        doAnswer(invocation -> {
+            // THEN
+            List<Song> songs = invocation.getArgument(0);
+            assertThat(songs).isEqualTo(SONG_LIST);
+            return null;
+        }).when(callback).onComplete(any());
+
+        // WHEN
+        songRepository.searchSongs("testTitle", "", callback);
+    }
+
+    @Test
+    public void shouldSearchSongsWhenArtistWhitespaceOnly() {
+        // GIVEN
+        when(songDao.find("%testTitle%", "%")).thenReturn(SONG_LIST);
+        doAnswer(invocation -> {
+            // THEN
+            List<Song> songs = invocation.getArgument(0);
+            assertThat(songs).isEqualTo(SONG_LIST);
+            return null;
+        }).when(callback).onComplete(any());
+
+        // WHEN
+        songRepository.searchSongs("testTitle", " \t\n", callback);
     }
 
     @Test
@@ -74,7 +179,7 @@ public class SongRepositoryTest {
         }).when(callback).onComplete(any());
 
         // WHEN
-        songRepository.searchSongs(null, callback);
+        songRepository.searchSongs(null, null, callback);
     }
 
     @Test
@@ -89,7 +194,7 @@ public class SongRepositoryTest {
         }).when(callback).onComplete(any());
 
         // WHEN
-        songRepository.searchSongs("", callback);
+        songRepository.searchSongs("", "", callback);
     }
 
     @Test

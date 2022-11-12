@@ -18,6 +18,7 @@ import androidx.work.WorkRequest;
 
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.inject.Inject;
 
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements HasAndroidInjecto
     private static final String[] PERMISSIONS = new String[]{
             Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE
     };
+
+    private static final AtomicLong sequence = new AtomicLong();
 
     @Inject
     DispatchingAndroidInjector<Object> androidInjector;
@@ -95,8 +98,12 @@ public class MainActivity extends AppCompatActivity implements HasAndroidInjecto
     }
 
     private void setSearchFieldListeners() {
-        EditText searchBox = findViewById(R.id.searchBox);
-        searchBox.addTextChangedListener(new SearchTextWatcher());
+        SearchTextWatcher listener = new SearchTextWatcher();
+        EditText searchTitleBox = findViewById(R.id.searchTitleBox);
+        searchTitleBox.addTextChangedListener(listener);
+        EditText searchArtistBox = findViewById(R.id.searchArtistBox);
+        searchArtistBox.addTextChangedListener(listener);
+
     }
 
     private void scheduleUpdate() {
@@ -123,18 +130,26 @@ public class MainActivity extends AppCompatActivity implements HasAndroidInjecto
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         @Override
-        public void onTextChanged(CharSequence query, int start, int before, int count) {
+        public void onTextChanged(CharSequence text, int start, int before, int count) {
+            EditText title = findViewById(R.id.searchTitleBox);
+            final String titleText = title.getText().toString();
+            EditText artist = findViewById(R.id.searchArtistBox);
+            final String artistText = artist.getText().toString();
+            long mySequence = sequence.incrementAndGet();
             executorService.execute(() ->
-                    songRepository.searchSongs(query.toString(), result -> {
-                        viewModel.updateResult(result);
-                        if (!result.isEmpty()) {
-                            runOnUiThread(searchResultFragment::notifyDataChanged);
-                        }
-                        runOnUiThread(() ->
-                                getSupportFragmentManager().beginTransaction()
-                                        .replace(R.id.result_container, result.isEmpty() ? emptyResultFragment : searchResultFragment)
-                                        .commitNow());
-                    }));
+                    songRepository.searchSongs(titleText, artistText, result -> {
+                        if (sequence.get() == mySequence) {
+                            viewModel.updateResult(result);
+                            if (!result.isEmpty()) {
+                                runOnUiThread(searchResultFragment::notifyDataChanged);
+                            }
+                            runOnUiThread(() ->
+                                    getSupportFragmentManager().beginTransaction()
+                                            .replace(R.id.result_container, result.isEmpty() ? emptyResultFragment : searchResultFragment)
+                                            .commitNow());
+                        } else {
+                            Log.d(TAG, "Discarded the results for `" + titleText + "` - `" + artistText + "` (seq#" + mySequence + ") as a newer search has already started (seq#" + sequence.get() + ")");
+                        }}));
         }
     }
 }

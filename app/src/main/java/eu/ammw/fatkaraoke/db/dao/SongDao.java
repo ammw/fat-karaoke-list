@@ -11,11 +11,11 @@ import eu.ammw.fatkaraoke.model.Song;
 
 @Dao
 public interface SongDao {
-    @Query("SELECT * FROM song")
+    @Query("SELECT * FROM song ORDER BY artist, title")
     List<Song> getAll();
 
-    @Query("SELECT * FROM song WHERE title LIKE :query OR artist LIKE :query")
-    List<Song> find(String query);
+    @Query("SELECT * FROM song WHERE title LIKE :title AND artist LIKE :artist ORDER BY artist, title")
+    List<Song> find(String title, String artist);
 
     @Insert
     void insertAll(Song... songs);

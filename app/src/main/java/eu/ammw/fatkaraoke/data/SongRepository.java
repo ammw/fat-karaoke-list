@@ -1,5 +1,7 @@
 package eu.ammw.fatkaraoke.data;
 
+import static java.util.Optional.ofNullable;
+
 import android.util.Log;
 
 import java.util.List;
@@ -22,13 +24,15 @@ public class SongRepository {
         this.database = database;
     }
 
-    public void searchSongs(final String query, final Callback<List<Song>> callback) {
+    public void searchSongs(final String title, final String artist, final Callback<List<Song>> callback) {
+        final String titleQuery = prepareQuery(title);
+        final String artistQuery = prepareQuery(artist);
         executorService.execute(() -> {
             List<Song> result;
-            if (query == null || query.isEmpty()) {
+            if (titleQuery.equals("%") && artistQuery.equals("%")) {
                 result = getAllSongs();
             } else {
-                result = getSongs(query);
+                result = getSongs(titleQuery, artistQuery);
             }
             Log.i(TAG, "Found songs: " + result.size());
             callback.onComplete(result);
@@ -40,9 +44,17 @@ public class SongRepository {
         return database.songDao().getAll();
     }
 
-    private List<Song> getSongs(String query) {
-        Log.i(TAG, "Searching for " + query);
-        return database.songDao().find("%" + query + "%");
+    private List<Song> getSongs(final String title, final String artist) {
+        Log.i(TAG, "Searching for title: `" + title + "`, artist: `" + artist + "`");
+        return database.songDao().find(title, artist);
+    }
+
+    private String prepareQuery(String input) {
+        return ofNullable(input)
+                .map(String::trim)
+                .filter(q -> !q.isEmpty())
+                .map(q -> "%" + q + "%")
+                .orElse("%");
     }
 
     public void updateSongs(Song... songs) {

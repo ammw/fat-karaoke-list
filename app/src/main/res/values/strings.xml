@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Fat Karaoke List</string>
-    <string name="title_or_author_search_placeholder">Search Title or Band</string>
+    <string name="title_search_placeholder">Search Title</string>
+    <string name="artist_search_placeholder">Search Artist</string>
     <string name="no_results">Sorry, no results!</string>
     <string name="button_update">Update song list</string>
 </resources>
