@@ -7,6 +7,6 @@ The songlist is getting longer and longer. That's not bad, but it's already too 
 This Android (Oreo 8.0+) application is supposed to download the list and search the local copy.
 
 ## Project status
-As son4u doesn't work any more, this project is in archive status now.
+As song4u doesn't work any more, this project is in archive status now.
 
 Note that it was still work-in-progress even before, so may not be perfect.
